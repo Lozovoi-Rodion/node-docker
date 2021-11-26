@@ -9,7 +9,7 @@ const {
     REDIS_PORT,
     SESSION_SECRET
 } = require("./config/cf");
-
+const cors = require('cors');
 const redis = require('redis')
 const session = require('express-session')
 
@@ -39,6 +39,8 @@ const connectWithRetry = () => {
 }
 connectWithRetry()
 
+app.enable("trust proxy")
+app.use(cors({}))
 app.use(
     session({
         store: new RedisStore({client: redisClient}),
@@ -53,11 +55,12 @@ app.use(
 )
 
 app.use(express.json())
-app.use("/posts", postRouter)
-app.use("/users", userRouter)
-app.get('/', (req, res) => {
+
+app.get('/api/v1', (req, res) => {
     res.send("<h2>Hi there!!!</h2>")
 })
+app.use("/api/v1/posts", postRouter)
+app.use("/api/v1/users", userRouter)
 
 
 app.listen(port, () => console.log("listening on port: ", port))
