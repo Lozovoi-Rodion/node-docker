@@ -11,6 +11,7 @@ services:
       - node-app
   node-app:
     build: .
+    image: 19843131/node-app
     environment:
       - PORT=3000
     depends_on:
